@@ -12,7 +12,8 @@ export const create = async(req,res) =>{
         }
 
         const savedData = await newUser.save();
-        res.status(200).json(savedData);
+         res.status(200).json({message: "user created succefully"})
+      
 
     }catch (error){
         res.status(500).json({errorMessage:error.message})
@@ -61,7 +62,7 @@ export const update = async (req, res) => {
             new: true
         })
 
-        res.status(200).json(updatedData)
+        res.status(200).json({message: "user Updated succefully"})
         
 
     } catch (error){

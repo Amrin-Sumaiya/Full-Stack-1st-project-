@@ -1,11 +1,11 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import {Link, useNavigate} from "react-router-dom"
+import {Link, useNavigate, useParams} from "react-router-dom"
 import toast from "react-hot-toast"
 
 
-const AddUser = () => {
+const UpdateUser = () => {
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -13,6 +13,7 @@ const AddUser = () => {
     })
    
     const navigate = useNavigate()
+    const {id} = useParams();
 
     const inputHandler = (e) =>{
         const {name, value} = e.target;
@@ -24,10 +25,21 @@ const AddUser = () => {
 
     }
 
+    useEffect (()=>{
+        axios.get(`http://localhost:8000/api/user/${id}`)
+        .then((response)=>{
+            setUser(response.data);
+
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    },[id])
+
     const submitForm = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post("http://localhost:8000/api/user", user, {
+          const response = await axios.put(`http://localhost:8000/api/update/user/${id}`, user, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -49,7 +61,7 @@ const AddUser = () => {
             <Link to="/">
         <button className="bg-gray-600 text-white px-8 py-1 rounded-md hover:bg-gray-500 transition duration-300"> <FaArrowLeft size={14} /> Back</button>
         </Link><br />
-      <h2 className="text-2xl font-bold text-green-800 text-center mb-4 shadow-inner">ADD NEW USER</h2>
+      <h2 className="text-2xl font-bold text-green-800 text-center mb-4 shadow-inner">UPDATE USER</h2>
 
       {/* Form */}
       <form className="space-y-4" onSubmit={submitForm}>
@@ -117,4 +129,5 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default UpdateUser;
+

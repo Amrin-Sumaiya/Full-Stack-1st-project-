@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { FaEdit, FaTrashAlt } from 'react-icons/fa'
 import {Link} from "react-router-dom"
 
@@ -18,6 +19,18 @@ const User = () => {
       };
       fetchData()
     },[])
+
+    const deleteUser = async (userId) =>{
+      await axios.delete(`http://localhost:8000/api/delete/user/${userId}`)
+      .then((response)=>{
+        setUser((prevUser)=>prevUser.filter((user)=>user.id !==userId))
+        toast.success(response.data.message,{position:"top-right"})
+      })
+   
+      .catch((error)=>{
+        console.log(error);
+      })
+    }
   
 
 
@@ -59,10 +72,12 @@ const User = () => {
         <td className="border border-gray-300 px-4 py-2 text-center">{user.name}</td>
         <td className="border border-gray-300 px-4 py-2 text-center">{user.email}</td>
         <td className="border border-gray-300 px-4 py-2 text-center">{user.address}</td>
+        <Link to={`/update/`+user._id}>
         <td className="border border-gray-300 px-4 py-2 text-center cursor-pointer text-blue-600 hover:text-blue-800 transition">
           <FaEdit size={20} />
         </td>
-        <td className="border border-gray-300 px-4 py-2 text-center cursor-pointer text-red-600 hover:text-red-800 transition">
+        </Link>
+        <td onClick={()=>deleteUser(user._id)} className="border border-gray-300 px-4 py-2 text-center cursor-pointer text-red-600 hover:text-red-800 transition">
           <FaTrashAlt size={20} />
         </td>
       </tr>
